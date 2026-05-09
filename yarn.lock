@@ -5,6 +5,35 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@acehubert/apifox-mcp@workspace:packages/apifox-mcp":
+  version: 0.0.0-use.local
+  resolution: "@acehubert/apifox-mcp@workspace:packages/apifox-mcp"
+  dependencies:
+    "@modelcontextprotocol/sdk": ^1.25.2
+    "@types/yargs": ^17.0.35
+    dotenv: ^17.2.3
+    yargs: ^17.7.2
+  bin:
+    apifox: dist/cli.cjs
+    apifox-mcp: dist/index.cjs
+  languageName: unknown
+  linkType: soft
+
+"@acehubert/testlink-mcp@workspace:packages/testlink-mcp":
+  version: 0.0.0-use.local
+  resolution: "@acehubert/testlink-mcp@workspace:packages/testlink-mcp"
+  dependencies:
+    "@modelcontextprotocol/sdk": ^1.25.2
+    "@types/yargs": ^17.0.35
+    dotenv: ^17.2.3
+    testlink-xmlrpc: ^3.0.0
+    yargs: ^17.7.2
+  bin:
+    testlink: dist/cli.cjs
+    testlink-mcp: dist/index.cjs
+  languageName: unknown
+  linkType: soft
+
 "@acehubert/zentao-api@workspace:*, @acehubert/zentao-api@workspace:packages/zentao-api":
   version: 0.0.0-use.local
   resolution: "@acehubert/zentao-api@workspace:packages/zentao-api"
@@ -10720,6 +10749,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"root@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "root@workspace:."
+  dependencies:
+    "@babel/runtime": ^7.28.4
+    "@commitlint/cli": ^19.8.1
+    "@commitlint/config-conventional": ^19.8.1
+    "@instructure/cz-lerna-changelog": ^8.56.2
+    "@types/jest": ^29.5.14
+    "@types/node": ^18.0.0
+    "@types/yargs": ^17.0.35
+    "@typescript-eslint/eslint-plugin": ^8.31.1
+    "@typescript-eslint/parser": ^8.31.1
+    commitizen: ^4.3.1
+    esbuild: ^0.27.2
+    eslint: ^8.57.1
+    eslint-config-prettier: ^10.1.2
+    eslint-import-resolver-typescript: ^4.3.5
+    eslint-plugin-import: ^2.31.0
+    eslint-plugin-prettier: ^5.2.6
+    jest: ^29.7.0
+    lerna: ^8.2.1
+    lerna-changelog: ^2.2.0
+    lint-staged: ^15.5.0
+    prettier: ^3.5.3
+    rimraf: ^6.1.3
+    ts-jest: ^29.2.5
+    ts-node: ^10.9.2
+    typescript: ^5.9.3
+    yorkie: ^2.0.0
+  languageName: unknown
+  linkType: soft
+
 "router@npm:^2.2.0":
   version: 2.2.0
   resolution: "router@npm:2.2.0"
@@ -10819,6 +10881,13 @@ __metadata:
   version: 2.1.2
   resolution: "safer-buffer@npm:2.1.2"
   checksum: cab8f25ae6f1434abee8d80023d7e72b598cf1327164ddab31003c51215526801e40b66c5e65d658a0af1e9d6478cadcb4c745f4bd6751f97d8644786c0978b0
+  languageName: node
+  linkType: hard
+
+"sax@npm:1.2.x":
+  version: 1.2.4
+  resolution: "sax@npm:1.2.4"
+  checksum: d3df7d32b897a2c2f28e941f732c71ba90e27c24f62ee918bd4d9a8cfb3553f2f81e5493c7f0be94a11c1911b643a9108f231dd6f60df3fa9586b5d2e3e9e1fe
   languageName: node
   linkType: hard
 
@@ -11615,6 +11684,15 @@ __metadata:
     glob: ^7.1.4
     minimatch: ^3.0.4
   checksum: 3b34a3d77165a2cb82b34014b3aba93b1c4637a5011807557dc2f3da826c59975a5ccad765721c4648b39817e3472789f9b0fa98fc854c5c1c7a1e632aacdc28
+  languageName: node
+  linkType: hard
+
+"testlink-xmlrpc@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "testlink-xmlrpc@npm:3.0.0"
+  dependencies:
+    xmlrpc: 1.3.2
+  checksum: d67f7e7fa97c515fe34a0531d536695d9bb9d8dcb95ca3db1e7376009541850b6574e3aad50c8e66cee2fc07856a71cb398d3e8caf5b5c8463aace7271345daa
   languageName: node
   linkType: hard
 
@@ -12691,6 +12769,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"xmlbuilder@npm:8.2.x":
+  version: 8.2.2
+  resolution: "xmlbuilder@npm:8.2.2"
+  checksum: 6e07fcee91aa77186302961e882c94a58d0a8d26f6cdeb637d2bc2cf9fb228a03d3214a6f9380846265c89a8536c19424468373f9e3f551c3be7a74819bd0777
+  languageName: node
+  linkType: hard
+
+"xmlrpc@npm:1.3.2":
+  version: 1.3.2
+  resolution: "xmlrpc@npm:1.3.2"
+  dependencies:
+    sax: 1.2.x
+    xmlbuilder: 8.2.x
+  checksum: c997d86ad282727fdfc429025377a91059f94c4d62708914fba542e82934b13921c3b5893840a456e954a3ce174fdd5bf83669aea1680462c03fb5bda1b5458a
+  languageName: node
+  linkType: hard
+
 "xtend@npm:~4.0.1":
   version: 4.0.2
   resolution: "xtend@npm:4.0.2"
@@ -12818,38 +12913,6 @@ __metadata:
   checksum: 6810adaf6be7b6cc115ed9454e5a4e8e0949deecb107d65dc0c196051e862f04d6394ad12fbef0d51e6c730329992ae98625ba82cba5e34775023ddb6dc921b8
   languageName: node
   linkType: hard
-
-"zentao@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "zentao@workspace:."
-  dependencies:
-    "@babel/runtime": ^7.28.4
-    "@commitlint/cli": ^19.8.1
-    "@commitlint/config-conventional": ^19.8.1
-    "@instructure/cz-lerna-changelog": ^8.56.2
-    "@types/jest": ^29.5.14
-    "@types/node": ^18.0.0
-    "@typescript-eslint/eslint-plugin": ^8.31.1
-    "@typescript-eslint/parser": ^8.31.1
-    commitizen: ^4.3.1
-    esbuild: ^0.27.2
-    eslint: ^8.57.1
-    eslint-config-prettier: ^10.1.2
-    eslint-import-resolver-typescript: ^4.3.5
-    eslint-plugin-import: ^2.31.0
-    eslint-plugin-prettier: ^5.2.6
-    jest: ^29.7.0
-    lerna: ^8.2.1
-    lerna-changelog: ^2.2.0
-    lint-staged: ^15.5.0
-    prettier: ^3.5.3
-    rimraf: ^6.1.3
-    ts-jest: ^29.2.5
-    ts-node: ^10.9.2
-    typescript: ^5.9.3
-    yorkie: ^2.0.0
-  languageName: unknown
-  linkType: soft
 
 "zod-to-json-schema@npm:^3.25.1":
   version: 3.25.2

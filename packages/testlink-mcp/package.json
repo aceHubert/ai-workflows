@@ -1,0 +1,62 @@
+{
+  "name": "@acehubert/testlink-mcp",
+  "version": "0.1.0",
+  "author": "aceHubert",
+  "license": "MIT",
+  "description": "TestLink MCP Server - 让 AI 助手能够管理 TestLink 测试用例、测试套件、测试计划和执行结果",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "testlink": "dist/cli.cjs",
+    "testlink-mcp": "dist/index.cjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    ".env.example"
+  ],
+  "keywords": [
+    "mcp",
+    "testlink",
+    "test-management",
+    "ai-assistant",
+    "model-context-protocol"
+  ],
+  "scripts": {
+    "dev": "node --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
+    "build": "run -T rimraf -rf dist && yarn build:types && yarn build:esm && yarn build:cjs && yarn build:cli",
+    "build:types": "run -T tsc --declaration --emitDeclarationOnly --declarationMap false --sourceMap false",
+    "build:esm": "run -T esbuild src/index.ts --bundle --packages=external --platform=node --target=node18 --format=esm --outfile=dist/index.js",
+    "build:cjs": "run -T esbuild src/index.ts --bundle --packages=external --platform=node --target=node18 --format=cjs --outfile=dist/index.cjs",
+    "build:cli": "run -T esbuild src/cli.ts --bundle --packages=external --platform=node --target=node18 --format=cjs --outfile=dist/cli.cjs",
+    "typecheck": "run -T tsc --noEmit",
+    "lint": "run -T eslint src --ext .ts --max-warnings=0",
+    "lint:fix": "run -T eslint src --ext .ts --fix"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "dotenv": "^17.2.3",
+    "testlink-xmlrpc": "^3.0.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.35"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aceHubert/zentao.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
