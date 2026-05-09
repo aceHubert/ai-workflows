@@ -4,12 +4,12 @@ AI 助手工具集 — 通过 MCP (Model Context Protocol) 让 AI 客户端管�
 
 ## 📦 Packages
 
-| 包名                                               | 版本  | 说明                      |
-| -------------------------------------------------- | ----- | ------------------------- |
-| [@acehubert/zentao-api](./packages/zentao-api)     | 0.5.0 | 禅道 API 调用模块         |
-| [@acehubert/zentao-mcp](./packages/zentao-mcp)     | 0.5.0 | 禅道 MCP Server & CLI     |
-| [@acehubert/testlink-mcp](./packages/testlink-mcp) | 0.1.0 | TestLink MCP Server & CLI |
-| [@acehubert/apifox-mcp](./packages/apifox-mcp)     | 0.1.0 | Apifox MCP Server & CLI   |
+| 包名                                               | 版本                                                                     | 说明                      |
+| -------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------- |
+| [@acehubert/zentao-api](./packages/zentao-api)     | ![NPM Version](https://img.shields.io/npm/v/%40acehubert%2Fzentao-api)   | 禅道 API 调用模块         |
+| [@acehubert/zentao-mcp](./packages/zentao-mcp)     | ![NPM Version](https://img.shields.io/npm/v/%40acehubert%2Fzentao-mcp)   | 禅道 MCP Server & CLI     |
+| [@acehubert/testlink-mcp](./packages/testlink-mcp) | ![NPM Version](https://img.shields.io/npm/v/%40acehubert%2Ftestlink-mcp) | TestLink MCP Server & CLI |
+| [@acehubert/apifox-mcp](./packages/apifox-mcp)     | ![NPM Version](https://img.shields.io/npm/v/%40acehubert%2Fapifox-mcp)   | Apifox MCP Server & CLI   |
 
 ## 🛠 开发
 

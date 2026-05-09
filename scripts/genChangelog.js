@@ -1,101 +1,48 @@
+// cp package.json _package.json &&preset=`conventional-commits-detector` && echo $preset && bump=`conventional-recommended-bump -p angular` && echo ${1:-$bump} && npm --no-git-tag-version version ${1:-$bump} &>/dev/null && conventional-changelog -i CHANGELOG.md -s -p ${2:-$preset} && git add CHANGELOG.md package.json package-lock.json && version=`cat package.json` && git commit -m'docs(CHANGELOG): $version' && mv -f _package.json package.json && npm version ${1:-$bump} -m 'chore(release): %s' && git push --follow-tags
+
 const fs = require("fs");
 const path = require("path");
-const { execFileSync, spawnSync } = require("child_process");
+const util = require("util");
+const execa = require("execa");
+const childProcess = require("child_process");
 
-const rootDir = path.resolve(__dirname, "..");
-const changelogPath = path.join(rootDir, "CHANGELOG.md");
+const execFileAsync = util.promisify(childProcess.execFile);
 
-function runLernaChangelog(args) {
-  const cliPath = require.resolve("lerna-changelog/bin/cli");
-  return execFileSync(process.execPath, [cliPath, ...args], {
-    cwd: rootDir,
-    env: process.env,
-    encoding: "utf8",
-    stdio: ["inherit", "pipe", "inherit"],
-  }).trim();
+async function genNewRelease() {
+  const nextVersion = require("../lerna.json").version;
+  const { stdout } = await execa(require.resolve("lerna-changelog/bin/cli"), [
+    "--next-version",
+    nextVersion,
+  ]);
+  return stdout;
 }
 
-function getNextVersion() {
-  const lernaConfig = require(path.join(rootDir, "lerna.json"));
-  return lernaConfig.version;
-}
-
-function getLastTag() {
-  try {
-    return execFileSync("git", ["describe", "--abbrev=0", "--tags"], {
-      cwd: rootDir,
-      env: process.env,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "ignore"],
-    }).trim();
-  } catch {
-    return "";
-  }
-}
-
-function getFirstCommit() {
-  return execFileSync("git", ["rev-list", "--max-parents=0", "HEAD"], {
-    cwd: rootDir,
-    env: process.env,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "inherit"],
-  })
-    .trim()
-    .split("\n")[0];
-}
-
-function prependChangelog(content) {
-  const existing = fs.existsSync(changelogPath)
-    ? fs.readFileSync(changelogPath, "utf8").trim()
-    : "";
-
-  const sections = [content.trim()];
-  if (existing) {
-    sections.push(existing);
-  }
-
-  fs.writeFileSync(changelogPath, `${sections.join("\n\n\n")}\n`, "utf8");
-}
-
-function stageChangelog() {
-  const result = spawnSync("git", ["add", "--", changelogPath], {
-    cwd: rootDir,
-    env: process.env,
-    stdio: "inherit",
-  });
-
-  if (result.status !== 0) {
-    throw new Error("git add CHANGELOG.md 失败");
-  }
-}
-
-function main() {
-  const cliArgs = process.argv.slice(2);
-
-  if (cliArgs.includes("--help") || cliArgs.includes("-h")) {
-    runLernaChangelog(cliArgs);
+const gen = (module.exports = async () => {
+  const newRelease = await genNewRelease();
+  if (!newRelease) {
     return;
   }
+  const changelogPath = path.resolve(__dirname, "../CHANGELOG.md");
 
-  const args =
-    cliArgs.length > 0
-      ? cliArgs
-      : getLastTag()
-        ? ["--next-version", getNextVersion()]
-        : ["--from", getFirstCommit(), "--next-version", getNextVersion()];
-  const output = runLernaChangelog(args);
+  const newChangelog = newRelease + "\n\n\n" + fs.readFileSync(changelogPath, { encoding: "utf8" });
+  fs.writeFileSync(changelogPath, newChangelog);
 
-  if (!output) {
-    return;
-  }
+  delete process.env.PREFIX;
+});
 
-  prependChangelog(output);
-  stageChangelog();
-}
-
-try {
-  main();
-} catch (error) {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
+if (require.main === module) {
+  gen()
+    .then(() =>
+      execFileAsync("git", ["add", "--", path.resolve(__dirname, "../CHANGELOG.md")], {
+        cwd: process.cwd(),
+        env: process.env,
+        stdio: "pipe",
+        encoding: "utf-8",
+      }),
+    )
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error(err);
+      process.exit(1);
+    });
 }

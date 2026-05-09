@@ -6,6 +6,8 @@
     "publish": {
       "conventionalCommits": true,
       "gitTagVersion": true,
+      "gitReset": true,
+      "allowBranch": ["main", "next"],
       "ignoreChanges": [
         "**/*.md",
         "**/node_modules/**",
@@ -13,7 +15,7 @@
         "**/coverage/**",
         "**/test/**"
       ],
-      "message": "chore(release): publish"
+      "message": "chore(release): 😊 publish"
     }
   },
   "changelog": {

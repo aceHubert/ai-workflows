@@ -1,7 +1,46 @@
-# Change Log
+## @acehubert/zentao-mcp@0.6.1 (2026-05-09)
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+#### :bug: Bug Fix
+
+- `zentao-api`
+  - [#5](https://github.com/aceHubert/ai-workflows/pull/5) refactor(zentao-api): 用 dayjs 替换自研日期工具函数 ([@aceHubert](https://github.com/aceHubert))
+
+#### Committers: 1
+
+- Hubert X ([@aceHubert](https://github.com/aceHubert))
+
+## @acehubert/zentao-api@0.6.1 (2026-05-09)
+
+#### :bug: Bug Fix
+
+- `zentao-api`
+  - [#5](https://github.com/aceHubert/ai-workflows/pull/5) refactor(zentao-api): 用 dayjs 替换自研日期工具函数 ([@aceHubert](https://github.com/aceHubert))
+
+#### Committers: 1
+
+- Hubert X ([@aceHubert](https://github.com/aceHubert))
+
+## @acehubert/testlink-mcp@0.1.1 (2026-05-09)
+
+#### :rocket: New Feature
+
+- `apifox-mcp`, `testlink-mcp`
+  - [#3](https://github.com/aceHubert/ai-workflows/pull/3) refactor(mcp): merge testlink and apifox mcp servers into monorepo ([@aceHubert](https://github.com/aceHubert))
+
+#### Committers: 1
+
+- Hubert X ([@aceHubert](https://github.com/aceHubert))
+
+## @acehubert/apifox-mcp@0.1.1 (2026-05-09)
+
+#### :rocket: New Feature
+
+- `apifox-mcp`, `testlink-mcp`
+  - [#3](https://github.com/aceHubert/ai-workflows/pull/3) refactor(mcp): merge testlink and apifox mcp servers into monorepo ([@aceHubert](https://github.com/aceHubert))
+
+#### Committers: 1
+
+- Hubert X ([@aceHubert](https://github.com/aceHubert))
 
 # [0.5.0](https://github.com/aceHubert/ai-workflows/compare/v0.4.0...v0.5.0) (2026-04-27)
 
@@ -37,5 +76,3 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **zentao-api:** 重构文档结构并移除通用客户端 ([f7ffe47](https://github.com/aceHubert/ai-workflows/commit/f7ffe47b9acfc710a704ee5a3f6bd2275a8e0d8d))
 - **zentao-clients:** 集成 @acehubert/zentao-api 统一封装各版本客户端 ([51a7736](https://github.com/aceHubert/ai-workflows/commit/51a77367c0eddcbd1ec4c908efd6ce9c42e516ed))
 - **zentao-mcp:** 新增独立 CLI 工具并优化 MCP 启动参数 ([cfe9270](https://github.com/aceHubert/ai-workflows/commit/cfe92700c8ca6883bf47e025cb3c5c1b02c692d8))
-
-# Changelog

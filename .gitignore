@@ -86,3 +86,6 @@ Thumbs.db
 # 环境变量
 .env
 .claude/settings.local.json
+
+# Lerna changelog cache files
+.changelog/
