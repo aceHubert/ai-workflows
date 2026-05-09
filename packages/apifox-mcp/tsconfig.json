@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "incremental": false,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "declaration": true,
+    "sourceMap": false,
+    "inlineSources": false,
+    "stripInternal": true
+  },
+  "include": ["src/**/*"]
+}
