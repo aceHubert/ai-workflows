@@ -1,6 +1,6 @@
 {
   "name": "@acehubert/apifox-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "aceHubert",
   "license": "MIT",
   "description": "Apifox MCP Server and CLI - 让 AI 助手读取和刷新 Apifox/OpenAPI 文档缓存",
