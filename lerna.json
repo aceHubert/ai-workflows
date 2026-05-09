@@ -17,7 +17,7 @@
     }
   },
   "changelog": {
-    "repo": "aceHubert/zentao",
+    "repo": "aceHubert/ai-workflows",
     "labels": {
       "feat": ":rocket: New Feature",
       "bug": ":bug: Bug Fix",

@@ -54,7 +54,7 @@
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/aceHubert/zentao.git"
+    "url": "https://github.com/aceHubert/ai-workflows.git"
   },
   "publishConfig": {
     "access": "public"

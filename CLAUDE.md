@@ -1,4 +1,6 @@
-# Monorepo of MCP (Model Context Protocol) servers and CLIs for AI assistants to manage Zentao, TestLink, and Apifox platforms
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 

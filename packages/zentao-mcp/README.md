@@ -121,7 +121,7 @@ npm install -g @acehubert/zentao-mcp
 1. 克隆项目并安装依赖：
 
 ```bash
-git clone https://github.com/aceHubert/zentao.git
+git clone https://github.com/aceHubert/ai-workflows.git
 cd zentao
 yarn install
 yarn build
