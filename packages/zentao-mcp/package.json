@@ -1,6 +1,6 @@
 {
   "name": "@acehubert/zentao-mcp",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "aceHubert",
   "license": "MIT",
   "description": "禅道 MCP Server - 让 AI 助手能够管理禅道中的 Bug、需求和测试用例",
