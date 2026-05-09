@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import {
   CreateDocModuleParams,
   CreateDocParams,
@@ -8,7 +9,7 @@ import {
   ZentaoLegacyApiResponse,
   ZentaoFileReadResult,
 } from "./types";
-import { formatDate, md5 } from "./utils";
+import { md5 } from "./utils";
 import Zentao from "./helpers/zentao";
 
 /**
@@ -845,7 +846,7 @@ export default class ZentaoLegacy extends Zentao {
         currentConsumed: params.currentConsumed,
         consumed,
         assignedTo: params.assignedTo,
-        finishedDate: params.finishedDate ?? formatDate(new Date(), "yyyy-MM-dd"),
+        finishedDate: params.finishedDate ?? dayjs().format("YYYY-MM-DD"),
         comment: params.comment,
         status: "done",
       },
@@ -1189,7 +1190,7 @@ export default class ZentaoLegacy extends Zentao {
     const data: Record<string, any> = {
       resolution: params.resolution ?? "fixed",
       resolvedBuild: params.resolvedBuild ?? "trunk",
-      resolvedDate: params.resolvedDate ?? formatDate(new Date(), "yyyy-MM-dd hh:mm:ss"),
+      resolvedDate: params.resolvedDate ?? dayjs().format("YYYY-MM-DD HH:mm:ss"),
       assignedTo: params.assignedTo,
       comment: params.comment,
       duplicateBug: params.duplicateBug,
