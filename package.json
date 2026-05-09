@@ -13,7 +13,7 @@
     "release:next": "lerna publish --conventional-commits --conventional-prerelease --preid next --dist-tag next",
     "release:graduate": "lerna publish --conventional-commits --conventional-graduate",
     "changelog": "node ./scripts/genChangelog.js",
-    "prepublishOnly": "yarn install --mode=skip-build && yarn build && yarn test",
+    "prepublishOnly": "yarn build && yarn test",
     "lint": "lerna run lint --stream --scope '@acehubert/*'",
     "lint:fix": "lerna run lint:fix --stream --scope '@acehubert/*'",
     "commit": "git-cz"
