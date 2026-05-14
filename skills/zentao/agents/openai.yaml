@@ -1,0 +1,9 @@
+interface:
+  display_name: "Zentao MCP"
+  short_description: "Use Zentao MCP tools for project and QA operations."
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#2F7DF6"
+
+policy:
+  allow_implicit_invocation: false

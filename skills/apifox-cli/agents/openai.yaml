@@ -1,0 +1,6 @@
+interface:
+  display_name: "Apifox CLI"
+  short_description: "Use the apifox CLI for OpenAPI cache inspection."
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#F26A3D"

@@ -1,0 +1,6 @@
+interface:
+  display_name: "TestLink CLI"
+  short_description: "Use the testlink CLI for test management tasks."
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#21A67A"

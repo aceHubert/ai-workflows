@@ -1,0 +1,6 @@
+interface:
+  display_name: "Zentao CLI"
+  short_description: "Use the zentao CLI for Zentao maintenance tasks."
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#2F7DF6"

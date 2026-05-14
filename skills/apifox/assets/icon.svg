@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Apifox MCP icon">
+  <defs>
+    <linearGradient id="bg" x1="96" y1="64" x2="416" y2="448" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8A4C"/>
+      <stop offset="1" stop-color="#E23D35"/>
+    </linearGradient>
+    <linearGradient id="line" x1="156" y1="148" x2="360" y2="356" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF7ED"/>
+      <stop offset="1" stop-color="#FFE0CC"/>
+    </linearGradient>
+    <filter id="shadow" x="78" y="74" width="356" height="366" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="16" flood-color="#8A241D" flood-opacity=".22" stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#1B1F2A"/>
+  <path fill="url(#bg)" d="M256 74c91 0 165 74 165 165v34c0 91-74 165-165 165S91 364 91 273v-34c0-91 74-165 165-165Z" filter="url(#shadow)"/>
+  <path fill="#1B1F2A" fill-opacity=".16" d="M156 180c22-44 58-68 100-68s78 24 100 68l-32 30c-14-39-37-59-68-59s-54 20-68 59l-32-30Z"/>
+  <path fill="none" stroke="url(#line)" stroke-linecap="round" stroke-linejoin="round" stroke-width="30" d="M166 319 224 179c7-17 17-25 32-25s25 8 32 25l58 140M203 263h106"/>
+  <circle cx="158" cy="335" r="24" fill="#FFF7ED"/>
+  <circle cx="354" cy="335" r="24" fill="#FFF7ED"/>
+  <path fill="none" stroke="#FFF7ED" stroke-linecap="round" stroke-width="18" d="M182 335h148"/>
+  <rect x="318" y="334" width="106" height="58" rx="22" fill="#1B1F2A" fill-opacity=".88"/>
+  <text x="371" y="371" fill="#FFF7ED" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" text-anchor="middle">MCP</text>
+</svg>

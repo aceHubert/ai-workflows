@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Zentao CLI icon">
+  <defs>
+    <linearGradient id="bg" x1="92" y1="76" x2="420" y2="436" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#65B7FF"/>
+      <stop offset="1" stop-color="#1E55D8"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#101827"/>
+  <path fill="url(#bg)" d="M142 104h228c29 0 52 23 52 52v200c0 29-23 52-52 52H142c-29 0-52-23-52-52V156c0-29 23-52 52-52Z"/>
+  <path fill="#FFFFFF" fill-opacity=".92" d="M167 170h178c10 0 15 12 8 20L221 340h128c13 0 23 10 23 23s-10 23-23 23H169c-10 0-16-12-9-20l133-150H167c-13 0-23-10-23-23s10-23 23-23Z"/>
+  <rect x="106" y="322" width="300" height="82" rx="28" fill="#111827" stroke="#EAF5FF" stroke-opacity=".22" stroke-width="4"/>
+  <path fill="none" stroke="#EAF5FF" stroke-linecap="round" stroke-linejoin="round" stroke-width="18" d="m146 351 28 21-28 21"/>
+  <path fill="none" stroke="#EAF5FF" stroke-linecap="round" stroke-width="18" d="M206 393h78"/>
+  <text x="343" y="379" fill="#EAF5FF" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="800" text-anchor="middle">CLI</text>
+</svg>

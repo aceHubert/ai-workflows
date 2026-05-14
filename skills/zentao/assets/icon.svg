@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Zentao MCP icon">
+  <defs>
+    <linearGradient id="bg" x1="92" y1="76" x2="420" y2="436" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#65B7FF"/>
+      <stop offset="1" stop-color="#1E55D8"/>
+    </linearGradient>
+    <filter id="shadow" x="72" y="68" width="368" height="376" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="16" flood-color="#0B2D7A" flood-opacity=".28" stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#101827"/>
+  <path fill="url(#bg)" d="M142 104h228c29 0 52 23 52 52v200c0 29-23 52-52 52H142c-29 0-52-23-52-52V156c0-29 23-52 52-52Z" filter="url(#shadow)"/>
+  <path fill="#FFFFFF" fill-opacity=".92" d="M167 170h178c10 0 15 12 8 20L221 340h128c13 0 23 10 23 23s-10 23-23 23H169c-10 0-16-12-9-20l133-150H167c-13 0-23-10-23-23s10-23 23-23Z"/>
+  <circle cx="156" cy="146" r="15" fill="#BFE3FF"/>
+  <circle cx="356" cy="366" r="15" fill="#BFE3FF"/>
+  <path fill="none" stroke="#DCEEFF" stroke-linecap="round" stroke-width="16" d="M164 146h50M306 366h50"/>
+  <rect x="318" y="334" width="106" height="58" rx="22" fill="#101827" fill-opacity=".9"/>
+  <text x="371" y="371" fill="#EAF5FF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" text-anchor="middle">MCP</text>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="TestLink MCP icon">
+  <defs>
+    <linearGradient id="bg" x1="88" y1="76" x2="424" y2="436" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#43D39F"/>
+      <stop offset="1" stop-color="#12835E"/>
+    </linearGradient>
+    <filter id="shadow" x="70" y="68" width="372" height="376" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="16" flood-color="#064D38" flood-opacity=".25" stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#10201C"/>
+  <path fill="url(#bg)" d="M256 76 418 170v172L256 436 94 342V170L256 76Z" filter="url(#shadow)"/>
+  <path fill="none" stroke="#E8FFF6" stroke-linecap="round" stroke-linejoin="round" stroke-width="34" d="M160 262h102m-51-51v102m71-73 37 37 72-82"/>
+  <circle cx="160" cy="262" r="20" fill="#E8FFF6"/>
+  <circle cx="262" cy="262" r="20" fill="#E8FFF6"/>
+  <circle cx="391" cy="195" r="20" fill="#E8FFF6"/>
+  <rect x="318" y="334" width="106" height="58" rx="22" fill="#10201C" fill-opacity=".9"/>
+  <text x="371" y="371" fill="#E8FFF6" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" text-anchor="middle">MCP</text>
+</svg>

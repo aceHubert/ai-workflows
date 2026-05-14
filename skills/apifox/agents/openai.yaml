@@ -1,0 +1,9 @@
+interface:
+  display_name: "Apifox MCP"
+  short_description: "Use Apifox MCP tools to inspect OpenAPI caches and refs."
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#F26A3D"
+
+policy:
+  allow_implicit_invocation: false
