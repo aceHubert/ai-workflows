@@ -9,21 +9,29 @@ MCP client.
 
 ## Setup
 
-_Note: If this is your first time using the CLI, see
-[references/installation.md](references/installation.md) to install the command
-and configure the connection. Installation is a one-time prerequisite and is
-not part of the regular AI workflow._
+If this is your first time using the CLI, see
+[references/installation.md](references/installation.md). Installation is a
+one-time prerequisite rather than part of the normal workflow.
+
+During setup, automatically check whether the installed CLI is older than the
+latest published package so the user can stay on the newest version. Follow
+[references/version-check.md](references/version-check.md) and prompt the user
+to update when a newer version is available.
 
 ## AI Workflow
 
 1. **Confirm configuration**: Prefer environment variables `TESTLINK_URL` and
    `TESTLINK_API_KEY` so API keys are not written into shell history.
-2. **Inspect before writing**: Before create, update, delete, close, or
+2. **Check version freshness when behavior matters**: Compare the installed CLI
+   version with the latest published package version before debugging unknown
+   commands, missing flags, or behavior that may have changed recently. If a
+   newer version exists, tell the user to update before continuing.
+3. **Inspect before writing**: Before create, update, delete, close, or
    execution actions, use `view` or `list` to confirm the target object exists
    and is in the expected state.
-3. **Execute**: Run `testlink <resource> <action>` directly. Output defaults to
+4. **Execute**: Run `testlink <resource> <action>` directly. Output defaults to
    formatted JSON and can be piped into `jq`, scripts, or later analysis.
-4. **Verify**: After a write action, run `view` or `list` again to confirm the
+5. **Verify**: After a write action, run `view` or `list` again to confirm the
    state, title, content, assignment, or execution result changed as expected.
 
 ## Command Usage
