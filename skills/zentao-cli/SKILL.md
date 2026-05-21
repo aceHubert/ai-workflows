@@ -9,26 +9,34 @@ client.
 
 ## Setup
 
-_Note: If this is your first time using the CLI, see
-[references/installation.md](references/installation.md) to install the command
-and configure the connection. Installation is a one-time prerequisite and is
-not part of the regular AI workflow._
+If this is your first time using the CLI, see
+[references/installation.md](references/installation.md). Installation is a
+one-time prerequisite rather than part of the normal workflow.
+
+During setup, automatically check whether the installed CLI is older than the
+latest published package so the user can stay on the newest version. Follow
+[references/version-check.md](references/version-check.md) and prompt the user
+to update when a newer version is available.
 
 ## AI Workflow
 
 1. **Confirm configuration**: Prefer environment variables
    `ZENTAO_URL`, `ZENTAO_ACCOUNT`, `ZENTAO_PASSWORD`, `ZENTAO_VERSION`, and
    `ZENTAO_SKIP_SSL` so passwords are not written into shell history.
-2. **Confirm client version**: Before using version-sensitive commands or
+2. **Check version freshness when behavior matters**: Compare the installed CLI
+   version with the latest published package version before debugging unknown
+   commands, missing flags, or behavior that may have changed recently. If a
+   newer version exists, tell the user to update before continuing.
+3. **Confirm client version**: Before using version-sensitive commands or
    arguments, run `zentao client getVersion`. Use the returned `clientVersion`
    value (`legacy`, `v1`, or `v2`) to choose supported argument values, such as
    `browseType`.
-3. **Inspect before writing**: Before create, resolve, close, or edit actions,
+4. **Inspect before writing**: Before create, resolve, close, or edit actions,
    use `view` or `list` to confirm the target object exists and is in the
    expected state.
-4. **Execute**: Run `zentao <resource> <action>` directly. Output defaults to
+5. **Execute**: Run `zentao <resource> <action>` directly. Output defaults to
    formatted JSON and can be piped into `jq`, scripts, or later analysis.
-5. **Verify**: After a write action, run `view` again to confirm the state,
+6. **Verify**: After a write action, run `view` again to confirm the state,
    title, content, or comment changed as expected.
 
 ## Command Usage
