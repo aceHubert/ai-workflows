@@ -14,6 +14,7 @@ export interface ApifoxApiOptions {
   apiVersion?: string;
   apiPageSize?: number;
   dataLocation?: string;
+  locale?: string;
 }
 
 export type ApifoxConfigKey = keyof ApifoxApiOptions;
@@ -27,6 +28,7 @@ export interface ResolvedApifoxApiOptions {
   apiVersion: string;
   apiPageSize: number;
   dataLocation: string;
+  locale?: string;
 }
 
 export type ApifoxSource =
@@ -43,11 +45,49 @@ export interface CacheInfo {
   lastUpdatedAt?: string;
 }
 
-type OpenApiDocument = JsonObject & {
+export type FetchProjectDocumentScope =
+  | {
+      type?: "ALL";
+      excludedByTags?: string[];
+    }
+  | {
+      type: "SELECTED_TAGS";
+      selectedTags: string[];
+      excludedByTags?: string[];
+    }
+  | {
+      type: "SELECTED_FOLDERS";
+      selectedFolderIds: number[];
+      excludedByTags?: string[];
+    }
+  | {
+      type: "SELECTED_ENDPOINTS";
+      selectedEndpointIds: number[];
+      excludedByTags?: string[];
+    };
+
+export interface FetchProjectDocumentRequestOptions {
+  includeApifoxExtensionProperties?: boolean;
+  addFoldersToTags?: boolean;
+}
+
+export interface FetchProjectDocumentOptions {
+  scope?: FetchProjectDocumentScope;
+  options?: FetchProjectDocumentRequestOptions;
+  oasVersion?: string;
+  exportFormat?: string;
+  environmentIds?: number[];
+  branchId?: number;
+  moduleId?: number;
+}
+
+export type OpenApiDocument = JsonObject & {
   paths?: Record<string, JsonObject>;
   components?: Record<string, Record<string, JsonObject>>;
   info?: JsonObject;
 };
+
+export type ProjectDocument = OpenApiDocument | string;
 
 const DEFAULT_API_BASE_URL = "https://api.apifox.com";
 const DEFAULT_API_VERSION = "2024-03-28";
@@ -64,6 +104,7 @@ export const APIFOX_CONFIG_KEYS = [
   "apiVersion",
   "apiPageSize",
   "dataLocation",
+  "locale",
 ] as const satisfies readonly ApifoxConfigKey[];
 
 function isRecord(value: unknown): value is JsonObject {
@@ -194,6 +235,10 @@ export function resolveApifoxInputOptions(options: ApifoxApiOptions): ApifoxApiO
       normalizeOptionalString(options.dataLocation) ??
       (typeof config.dataLocation === "string" ? config.dataLocation : undefined) ??
       normalizeOptionalString(process.env.APIFOX_DATA_LOCATION),
+    locale:
+      normalizeOptionalString(options.locale) ??
+      (typeof config.locale === "string" ? config.locale : undefined) ??
+      normalizeOptionalString(process.env.APIFOX_LOCALE),
   };
 }
 
@@ -211,6 +256,7 @@ export function resolveApifoxEffectiveOptionValues(
     apiVersion: resolvedInputs.apiVersion ?? DEFAULT_API_VERSION,
     apiPageSize: normalizePageSize(resolvedInputs.apiPageSize),
     dataLocation: resolvedInputs.dataLocation ?? os.homedir(),
+    locale: resolvedInputs.locale,
   };
 }
 
@@ -401,6 +447,7 @@ export function resolveApifoxApiOptions(options: ApifoxApiOptions): ResolvedApif
     apiVersion: resolvedInputs.apiVersion ?? DEFAULT_API_VERSION,
     apiPageSize: normalizePageSize(resolvedInputs.apiPageSize),
     dataLocation: resolvedInputs.dataLocation ?? os.homedir(),
+    locale: resolvedInputs.locale,
   };
 }
 
@@ -440,7 +487,7 @@ export class ApifoxAPI {
     this.cacheDir = path.join(
       this.options.dataLocation,
       DEFAULT_DATA_ROOT_NAME,
-      this.getSourceCacheKey(),
+      this.getSourceCacheKey(this.options.source),
     );
     this.cacheFile = path.join(this.cacheDir, "index.json");
   }
@@ -514,8 +561,7 @@ export class ApifoxAPI {
     }
   }
 
-  private getSourceCacheKey(): string {
-    const { source } = this.options;
+  private getSourceCacheKey(source: ApifoxSource): string {
     switch (source.name) {
       case "project":
         return `project-${source.identifier}`;
@@ -529,10 +575,10 @@ export class ApifoxAPI {
     }
   }
 
-  private async requestJson(url: string, init?: RequestInit): Promise<unknown> {
+  private buildRequestHeaders(init?: RequestInit): Headers {
     const headers = new Headers(init?.headers);
     headers.set("User-Agent", "apifox-mcp-server/0.0.1");
-    headers.set("X-Apifox-Version", this.options.apiVersion);
+    headers.set("X-Apifox-Api-Version", this.options.apiVersion);
 
     if (this.options.token) {
       headers.set("Authorization", `Bearer ${this.options.token}`);
@@ -541,6 +587,12 @@ export class ApifoxAPI {
     if (init?.body && !headers.has("Content-Type")) {
       headers.set("Content-Type", "application/json");
     }
+
+    return headers;
+  }
+
+  private async requestJson(url: string, init?: RequestInit): Promise<unknown> {
+    const headers = this.buildRequestHeaders(init);
 
     const response = await fetch(url, {
       ...init,
@@ -557,6 +609,28 @@ export class ApifoxAPI {
     return response.json();
   }
 
+  private async requestBody(url: string, init?: RequestInit): Promise<unknown> {
+    const headers = this.buildRequestHeaders(init);
+
+    const response = await fetch(url, {
+      ...init,
+      headers,
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(
+        `请求失败: ${response.status} ${response.statusText}${text ? ` - ${text}` : ""}`,
+      );
+    }
+
+    const contentType = response.headers.get("Content-Type") ?? "";
+    if (contentType.includes("json")) {
+      return response.json();
+    }
+    return response.text();
+  }
+
   private async fetchSourceDocument(): Promise<OpenApiDocument> {
     const { source } = this.options;
 
@@ -565,7 +639,7 @@ export class ApifoxAPI {
         if (!this.options.token) {
           throw new Error("读取 Apifox 项目时必须提供 APIFOX_ACCESS_TOKEN");
         }
-        return this.fetchProjectDocument(source.identifier);
+        return this.assertOpenApi(await this.fetchProjectDocument(source.identifier));
       case "doc-site":
         return this.fetchDocSiteDocument(source.identifier);
       case "remote-file":
@@ -577,18 +651,71 @@ export class ApifoxAPI {
     }
   }
 
-  private async fetchProjectDocument(projectId: string): Promise<OpenApiDocument> {
-    const url = new URL(
-      `/api/v1/projects/${projectId}/export-openapi`,
-      this.options.apiBaseUrl,
-    ).toString();
-    const result = await this.requestJson(url, {
+  async fetchProjectDocument(
+    projectId: string,
+    options: FetchProjectDocumentOptions = {},
+  ): Promise<ProjectDocument> {
+    const url = new URL(`/v1/projects/${projectId}/export-openapi`, this.options.apiBaseUrl);
+    if (this.options.locale) {
+      url.searchParams.set("locale", this.options.locale);
+    }
+
+    const result = await this.requestBody(url.toString(), {
       method: "POST",
-      body: JSON.stringify({ scope: { type: "ALL" } }),
+      body: JSON.stringify(this.buildProjectRequestBody(options)),
     });
+    if (typeof result === "string") {
+      return result;
+    }
     return this.assertOpenApi(result);
   }
 
+  private buildProjectRequestBody(options: FetchProjectDocumentOptions): JsonObject {
+    const {
+      branchId,
+      environmentIds,
+      exportFormat,
+      moduleId,
+      oasVersion,
+      options: requestOptions,
+    } = options;
+
+    const body: JsonObject = {
+      scope: options.scope ?? { type: "ALL" },
+    };
+
+    if (
+      requestOptions?.includeApifoxExtensionProperties !== undefined ||
+      requestOptions?.addFoldersToTags !== undefined
+    ) {
+      body.options = {
+        ...(requestOptions.includeApifoxExtensionProperties !== undefined
+          ? { includeApifoxExtensionProperties: requestOptions.includeApifoxExtensionProperties }
+          : {}),
+        ...(requestOptions.addFoldersToTags !== undefined
+          ? { addFoldersToTags: requestOptions.addFoldersToTags }
+          : {}),
+      };
+    }
+
+    if (oasVersion) {
+      body.oasVersion = oasVersion;
+    }
+    if (exportFormat) {
+      body.exportFormat = exportFormat;
+    }
+    if (branchId !== undefined) {
+      body.branchId = branchId;
+    }
+    if (moduleId !== undefined) {
+      body.moduleId = moduleId;
+    }
+    if (environmentIds && environmentIds.length > 0) {
+      body.environmentIds = environmentIds;
+    }
+
+    return body;
+  }
   private async fetchDocSiteDocument(siteId: string): Promise<OpenApiDocument> {
     const url = new URL(
       `/api/v1/docs-sites/${siteId}/export-mcp-data`,
