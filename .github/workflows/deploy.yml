@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   publish:
@@ -31,6 +32,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+      - name: Set up npm
+        run: npm install --global npm@11.5.1
       - name: Enable Corepack
         run: corepack enable
       - name: Cache Dependencies
@@ -51,16 +55,9 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{github.actor}}"
           git config --list
-      - name: Authenticate with Registry
-        run: |
-          npm config set registry https://registry.npmjs.org/
-          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
-          npm whoami
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish
         run: |
-          npx lerna publish --yes --no-granular-pathspec
+          npx --yes lerna@9.0.7 publish --yes --no-granular-pathspec
         env:
           GITHUB_AUTH: ${{ secrets.GITHUB_TOKEN }}
           # https://github.com/renovatebot/renovate/discussions/9481?sort=old#discussioncomment-660412
