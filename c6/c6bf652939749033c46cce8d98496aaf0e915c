@@ -1,0 +1,35 @@
+skills/zentao/SKILL.md
+  s_f345cbca22215a::t_f9abbaba08ee15 91-93
+packages/zentao-mcp/src/zentao-clients/client-legacy.ts
+  s_f345cbca22215a::t_d4be7ea6308205 92-122
+  s_f345cbca22215a::t_0781d1da442e78 327
+  s_f345cbca22215a::t_a4ea2480ef4d2b 323-325,330,332
+packages/zentao-api/src/zentao-legacy.ts
+  s_f345cbca22215a::t_4118a484a3133d 1222,1224-1228,1233-1235,1244,1246,1251-1252,1255-1257,1259-1271,1273
+  s_f345cbca22215a::t_2c70d5183055fc 1229-1232,1236,1258,1272
+packages/zentao-mcp/src/index.ts
+  s_f345cbca22215a::t_76a0a1b8bf08f1 508
+skills/zentao-cli/SKILL.md
+  s_f345cbca22215a::t_e6c28e0510c4b6 162-164
+packages/zentao-api/test/zentao-legacy.test.ts
+  s_f345cbca22215a::t_efbee4507556b5 651
+  s_f345cbca22215a::t_9c67a6f94e6c08 622,626-627,637-641,643,645-650,652-658
+  s_f345cbca22215a::t_a92099538cc222 631,636
+  s_f345cbca22215a::t_acaaf7c04f68fb 634-635
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c6c6bf652939749033c46cce8d98496aaf0e915c",
+  "prompts": {},
+  "sessions": {
+    "s_f345cbca22215a": {
+      "agent_id": {
+        "tool": "zcode",
+        "id": "session_8d9d7b6b5bd6a9e25bf88c951106c814",
+        "model": "GLM-5.3"
+      },
+      "human_author": "hubert <hubert@lejian.com>"
+    }
+  }
+}
