@@ -1,0 +1,19 @@
+package.json
+  s_a4960aa8f2a3ac::t_3e97d9a511362a 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e86e9fa1e6de01f41ee2246086a4e97f8bf97c1e",
+  "prompts": {},
+  "sessions": {
+    "s_a4960aa8f2a3ac": {
+      "agent_id": {
+        "tool": "zcode",
+        "id": "session_8554a7c606e9412fb5cfa13aba6efe9e",
+        "model": "GLM-5.3"
+      },
+      "human_author": "hubert <hubert@lejian.com>"
+    }
+  }
+}
