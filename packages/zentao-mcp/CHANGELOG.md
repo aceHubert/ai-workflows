@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/aceHubert/ai-workflows/compare/@acehubert/zentao-mcp@0.6.1...@acehubert/zentao-mcp@0.7.0) (2026-10-28)
+
+### Bug Fixes
+
+- **zentao:** legacy 版本列表改用 execution/build 与 project/build 接口 ([c6c6bf6](https://github.com/aceHubert/ai-workflows/commit/c6c6bf652939749033c46cce8d98496aaf0e915c))
+
+### Features
+
+- **zentao:** 封装版本（Build）查询与创建能力 ([6086006](https://github.com/aceHubert/ai-workflows/commit/608600624fca8ea201175533cb9a79ee2c7e016d))
+
 ## [0.6.1](https://github.com/aceHubert/ai-workflows/compare/@acehubert/zentao-mcp@0.6.0...@acehubert/zentao-mcp@0.6.1) (2026-05-09)
 
 **Note:** Version bump only for package @acehubert/zentao-mcp
