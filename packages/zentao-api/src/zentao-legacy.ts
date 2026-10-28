@@ -1219,9 +1219,21 @@ export default class ZentaoLegacy extends Zentao {
   }
 
   /**
-   * 获取指定执行的版本（Build）列表
+   * 获取版本（Build）列表
    *
-   * @param params 请求参数，`params.executionID` 用于指定执行 ID，`params.type` 用于指定筛选类型，`params.recPerPage` 与 `params.pageID` 指定分页信息，`params.extraFields` 指定额外要返回的字段
+   * 内置 API 的 build 模块没有 browse 方法，实际的批量接口是
+   * `execution-build`（按执行查，仅返回当前执行的版本）和
+   * `project-build`（按项目查，返回项目下所有执行的版本），
+   * `executionID` 与 `projectID` 至少传一个。
+   *
+   * 注意：这两个接口只接受范围 ID 一个参数，传入 orderBy / recPerPage 等
+   * 分页参数会被按位置错误绑定导致 SQL 报错，因此不提供服务端分页，
+   * 调用方需要自行截断。
+   *
+   * 返回结构里的 `executionBuilds` / `projectBuilds` 为按产品 ID 分组的对象，
+   * 值是该产品下的版本数组。
+   *
+   * @param params 请求参数，`params.executionID` 用于指定执行 ID，`params.projectID` 用于指定项目 ID，`params.extraFields` 指定额外要返回的字段
    * @returns 请求结果
    * @example
    * ```js
@@ -1229,36 +1241,36 @@ export default class ZentaoLegacy extends Zentao {
    * const zentao = new ZentaoApi({
    *     url: 'https://pro.demo.zentao.net/', account: 'demo', password: '123456'
    * });
-   * const result = await zentao.getBuildList({executionID: 5, recPerPage: 20});
+   * const result = await zentao.getBuildList({executionID: 5});
    * if (result.status) {
-   *     console.log('版本列表', result.result.builds);
+   *     console.log('执行下的版本列表', result.result.executionBuilds);
    * }
    * ```
    */
   async getBuildList(params: {
-    executionID: number;
-    type?: "all" | "product" | "bysearch";
-    param?: number | string;
-    orderBy?: string;
-    recTotal?: number;
-    recPerPage?: number;
-    pageID?: number;
+    executionID?: number;
+    projectID?: number;
     extraFields?: string[];
   }): Promise<ZentaoLegacyApiResponse> {
-    const res = await this.request("build", "browse", {
-      name: "getBuildList",
-      params: [
-        ["executionID", params.executionID],
-        ["type", params?.type ?? "all"],
-        ["param", params?.param ?? 0],
-        ["orderBy", params?.orderBy ?? "id_desc"],
-        ["recTotal", params?.recTotal ?? 0],
-        ["recPerPage", params?.recPerPage ?? 20],
-        ["pageID", params?.pageID ?? 1],
-      ],
-      fields: ["title", "builds", ...(params?.extraFields ?? [])],
-    });
-    return res;
+    if (params.executionID !== undefined) {
+      const res = await this.request("execution", "build", {
+        name: "getBuildList",
+        params: [["executionID", params.executionID]],
+        fields: ["title", "executionBuilds", "buildsTotal", ...(params?.extraFields ?? [])],
+      });
+      return res;
+    }
+
+    if (params.projectID !== undefined) {
+      const res = await this.request("project", "build", {
+        name: "getBuildList",
+        params: [["projectID", params.projectID]],
+        fields: ["title", "projectBuilds", "buildsTotal", ...(params?.extraFields ?? [])],
+      });
+      return res;
+    }
+
+    throw new Error("getBuildList 需要提供 executionID 或 projectID");
   }
 
   /**

@@ -89,6 +89,37 @@ function pickEntity<T>(value: unknown, ...keys: string[]): T | null {
   return value as T;
 }
 
+/**
+ * 展平 legacy 版本列表接口返回的按产品 ID 分组的 builds 对象
+ * （executionBuilds / projectBuilds，组内为版本数组）。
+ */
+function flattenGroupedBuilds(value: unknown): Build[] {
+  const record = isRecord(value) ? value : null;
+  if (!record) {
+    return Array.isArray(value) ? (value as Build[]) : [];
+  }
+
+  for (const key of ["executionBuilds", "projectBuilds"]) {
+    const grouped = record[key];
+    if (Array.isArray(grouped)) {
+      return grouped as Build[];
+    }
+    if (isRecord(grouped)) {
+      return Object.values(grouped).flatMap((group): Build[] => {
+        if (Array.isArray(group)) {
+          return group as Build[];
+        }
+        if (isRecord(group)) {
+          return Object.values(group) as Build[];
+        }
+        return [];
+      });
+    }
+  }
+
+  return [];
+}
+
 function pickNumber(value: unknown): number | null {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
@@ -289,16 +320,16 @@ export class ZentaoClientLegacy implements IZentaoClient {
     }
   }
 
-  async getBuilds(executionID?: number, _projectID?: number, limit = 100): Promise<Build[]> {
-    if (!executionID) {
-      throw new Error("Legacy API 查询版本列表需要提供 executionID");
+  async getBuilds(executionID?: number, projectID?: number, limit = 100): Promise<Build[]> {
+    if (!executionID && !projectID) {
+      throw new Error("查询版本列表失败: 缺少 executionID 或 projectID");
     }
+    // legacy 列表接口不支持服务端分页，取回后本地截断
     const result = (await this.api.getBuildList({
       executionID,
-      recPerPage: limit,
-      pageID: 1,
+      projectID,
     })) as LegacyApiResult;
-    return pickCollection<Build>(result.result, "builds");
+    return flattenGroupedBuilds(result.result).slice(0, limit);
   }
 
   async getBuild(buildID: number): Promise<Build | null> {

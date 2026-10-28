@@ -159,9 +159,9 @@ zentao users view --userID 1
 
 ## Builds
 
-`list` accepts `--executionID` or `--projectID` (at least one; `legacy` only
-supports `--executionID`). `create` requires `--projectID`, `--executionID`,
-`--product`, `--name`, and `--builder`.
+`list` accepts `--executionID` or `--projectID` (at least one). `create`
+requires `--projectID`, `--executionID`, `--product`, `--name`, and
+`--builder`.
 
 ```bash
 zentao builds list --executionID 5 --limit 20

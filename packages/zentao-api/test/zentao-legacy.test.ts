@@ -619,25 +619,43 @@ describe("ZentaoLegacy", () => {
     expectNthRequest(2, "?m=bug&f=view&bugID=1&t=json");
   });
 
-  it("getBuildList 应返回版本列表", async () => {
+  it("getBuildList 应按执行请求 execution/build 版本列表", async () => {
     mockLoginSuccessOnce();
     mockApiSuccessOnce({
       title: "版本列表",
-      builds: [{ id: 3, name: "build1" }],
-      pager: { recTotal: 1 },
+      executionBuilds: { 1852: [{ id: 50, name: "build1" }] },
+      ignored: "x",
     });
 
     const client = createMockClient();
-    const res = await client.getBuildList({ executionID: 5, recPerPage: 20 });
+    const res = await client.getBuildList({ executionID: 2390 });
 
     expect(res.status).toBe(1);
-    expect(res.result).toStrictEqual({
+    expect(res.result.title).toBe("版本列表");
+    expect(res.result.executionBuilds).toStrictEqual({ 1852: [{ id: 50, name: "build1" }] });
+    expectNthRequest(2, "?m=execution&f=build&executionID=2390&t=json");
+  });
+
+  it("getBuildList 应按项目请求 project/build 版本列表", async () => {
+    mockLoginSuccessOnce();
+    mockApiSuccessOnce({
       title: "版本列表",
-      builds: [{ id: 3, name: "build1" }],
+      projectBuilds: { 1852: [{ id: 50 }, { id: 49 }] },
     });
-    expectNthRequest(
-      2,
-      "?m=build&f=browse&executionID=5&type=all&param=0&orderBy=id_desc&recTotal=0&recPerPage=20&pageID=1&t=json",
+
+    const client = createMockClient();
+    const res = await client.getBuildList({ projectID: 2045 });
+
+    expect(res.status).toBe(1);
+    expect(res.result.projectBuilds).toStrictEqual({ 1852: [{ id: 50 }, { id: 49 }] });
+    expectNthRequest(2, "?m=project&f=build&projectID=2045&t=json");
+  });
+
+  it("getBuildList 缺少 executionID 和 projectID 时应抛错", async () => {
+    const client = createMockClient();
+
+    await expect(client.getBuildList({})).rejects.toThrow(
+      "getBuildList 需要提供 executionID 或 projectID",
     );
   });
 

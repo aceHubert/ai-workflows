@@ -88,8 +88,9 @@ small when possible.
 
 ### Builds
 
-- Use `zentao_builds` with `action: "list"` and `executionID` (or `projectID`
-  on `v1` / `v2`) to list builds; `legacy` only supports `executionID`.
+- Use `zentao_builds` with `action: "list"` and `executionID` or `projectID`
+  (at least one) to list builds. `executionID` scopes to a single execution;
+  `projectID` covers all executions of the project.
 - Use `action: "view"` with `buildID` to confirm a build before referencing it
   in bugs (`openedBuild`) or test flows.
 - Use `action: "create"` with `executionID`, `projectID`, `product`, `name`,

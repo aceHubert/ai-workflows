@@ -505,7 +505,7 @@ const tools: ZentaoTool[] = [
         },
         executionID: {
           type: "number",
-          description: "执行 ID（list/create 时使用，legacy 版本 list 仅支持按执行查询）",
+          description: "执行 ID（list/create 时使用）",
         },
         projectID: {
           type: "number",
