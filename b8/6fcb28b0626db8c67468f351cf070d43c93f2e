@@ -1,0 +1,21 @@
+packages/testlink-mcp/src/index.ts
+  s_a4960aa8f2a3ac::t_3eb465f9f67496 5
+packages/apifox-mcp/src/index.ts
+  s_a4960aa8f2a3ac::t_af54c2f5599ccd 2-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b86fcb28b0626db8c67468f351cf070d43c93f2e",
+  "prompts": {},
+  "sessions": {
+    "s_a4960aa8f2a3ac": {
+      "agent_id": {
+        "tool": "zcode",
+        "id": "session_8554a7c606e9412fb5cfa13aba6efe9e",
+        "model": "GLM-5.3"
+      },
+      "human_author": "hubert <hubert@lejian.com>"
+    }
+  }
+}
