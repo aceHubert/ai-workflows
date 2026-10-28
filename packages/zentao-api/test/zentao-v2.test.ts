@@ -143,6 +143,60 @@ describe("ZentaoV2", () => {
     expect(get).toHaveBeenCalledWith("/api.php/v2/products/6/systems?recPerPage=20&pageID=1");
   });
 
+  it("getExecutionBuilds 应请求执行版本列表并传递分页参数", async () => {
+    post.mockResolvedValueOnce({ data: { token: "v2-token" } });
+    get.mockResolvedValueOnce({ data: { builds: [{ id: 3, name: "build1" }] } });
+
+    const client = createClient();
+    const result = await client.getExecutionBuilds(5, 20);
+
+    expect(result).toStrictEqual([{ id: 3, name: "build1" }]);
+    expect(get).toHaveBeenCalledWith("/api.php/v2/executions/5/builds?recPerPage=20&pageID=1");
+  });
+
+  it("getProjectBuilds 未传 limit 时不附加分页参数", async () => {
+    post.mockResolvedValueOnce({ data: { token: "v2-token" } });
+    get.mockResolvedValueOnce({ data: { builds: [{ id: 4, name: "build2" }] } });
+
+    const client = createClient();
+    const result = await client.getProjectBuilds(7);
+
+    expect(result).toStrictEqual([{ id: 4, name: "build2" }]);
+    expect(get).toHaveBeenCalledWith("/api.php/v2/projects/7/builds");
+  });
+
+  it("getBuild 应请求版本详情", async () => {
+    post.mockResolvedValueOnce({ data: { token: "v2-token" } });
+    get.mockResolvedValueOnce({ data: { build: { id: 3, name: "build1" } } });
+
+    const client = createClient();
+    const result = await client.getBuild(3);
+
+    expect(result).toStrictEqual({ id: 3, name: "build1" });
+    expect(get).toHaveBeenCalledWith("/api.php/v2/builds/3");
+  });
+
+  it("createBuild 应调用 v2 版本创建接口", async () => {
+    post.mockResolvedValueOnce({ data: { token: "v2-token" } });
+    post.mockResolvedValueOnce({ data: { build: { id: 6, name: "build3" } } });
+
+    const client = createClient();
+    const result = await client.createBuild({
+      execution: 5,
+      product: 2,
+      name: "build3",
+      builder: "demo",
+    });
+
+    expect(result).toStrictEqual({ build: { id: 6, name: "build3" } });
+    expect(post).toHaveBeenNthCalledWith(2, "/api.php/v2/builds", {
+      execution: 5,
+      product: 2,
+      name: "build3",
+      builder: "demo",
+    });
+  });
+
   it("assignFeedback 应调用 v2 反馈指派接口", async () => {
     post.mockResolvedValueOnce({ data: { token: "v2-token" } });
     put.mockResolvedValueOnce({ data: { result: "success" } });

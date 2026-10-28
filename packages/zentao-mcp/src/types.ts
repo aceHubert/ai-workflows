@@ -778,6 +778,9 @@ export interface IZentaoClient {
   getProduct(productID: number): Promise<Product | null>;
   getProjects(limit?: number): Promise<Project[]>;
   getProject(projectID: number): Promise<Project | null>;
+  getBuilds(executionID?: number, projectID?: number, limit?: number): Promise<Build[]>;
+  getBuild(buildID: number): Promise<Build | null>;
+  createBuild(params: CreateBuildParams): Promise<Build>;
   getUsers(limit?: number): Promise<User[]>;
   getUser(userID: number): Promise<User | null>;
   getMyProfile(): Promise<User | null>;

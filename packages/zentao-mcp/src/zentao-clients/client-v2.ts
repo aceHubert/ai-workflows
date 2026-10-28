@@ -3,9 +3,11 @@ import { ZentaoV2 } from "@acehubert/zentao-api";
 import type { ZentaoFileReadResult } from "@acehubert/zentao-api";
 import type {
   Bug,
+  Build,
   CloseBugParams,
   CloseStoryParams,
   CreateBugParams,
+  CreateBuildParams,
   CreateDocModuleParams,
   CreateDocParams,
   CreateStoryParams,
@@ -284,6 +286,34 @@ export class ZentaoClientV2 implements IZentaoClient {
 
   async getProject(projectID: number): Promise<Project | null> {
     return (await this.api.getProject(projectID)) as Project | null;
+  }
+
+  async getBuilds(executionID?: number, projectID?: number, limit = 100): Promise<Build[]> {
+    if (executionID) {
+      return (await this.api.getExecutionBuilds(executionID, limit)) as Build[];
+    }
+    if (projectID) {
+      return (await this.api.getProjectBuilds(projectID, limit)) as Build[];
+    }
+    throw new Error("查询版本列表失败: 缺少 executionID 或 projectID");
+  }
+
+  async getBuild(buildID: number): Promise<Build | null> {
+    return (await this.api.getBuild(buildID)) as Build | null;
+  }
+
+  async createBuild(params: CreateBuildParams): Promise<Build> {
+    return (await this.api.createBuild({
+      execution: params.execution,
+      product: params.product,
+      name: params.name,
+      builder: params.builder,
+      branch: params.branch,
+      date: params.date,
+      scmPath: params.scmPath,
+      filePath: params.filePath,
+      desc: params.desc,
+    })) as Build;
   }
 
   async getUsers(limit = 100): Promise<User[]> {

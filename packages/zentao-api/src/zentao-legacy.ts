@@ -1219,6 +1219,140 @@ export default class ZentaoLegacy extends Zentao {
   }
 
   /**
+   * 获取版本（Build）列表
+   *
+   * 内置 API 的 build 模块没有 browse 方法，实际的批量接口是
+   * `execution-build`（按执行查，仅返回当前执行的版本）和
+   * `project-build`（按项目查，返回项目下所有执行的版本），
+   * `executionID` 与 `projectID` 至少传一个。
+   *
+   * 注意：这两个接口只接受范围 ID 一个参数，传入 orderBy / recPerPage 等
+   * 分页参数会被按位置错误绑定导致 SQL 报错，因此不提供服务端分页，
+   * 调用方需要自行截断。
+   *
+   * 返回结构里的 `executionBuilds` / `projectBuilds` 为按产品 ID 分组的对象，
+   * 值是该产品下的版本数组。
+   *
+   * @param params 请求参数，`params.executionID` 用于指定执行 ID，`params.projectID` 用于指定项目 ID，`params.extraFields` 指定额外要返回的字段
+   * @returns 请求结果
+   * @example
+   * ```js
+   * import { ZentaoApi } from 'zentao-api';
+   * const zentao = new ZentaoApi({
+   *     url: 'https://pro.demo.zentao.net/', account: 'demo', password: '123456'
+   * });
+   * const result = await zentao.getBuildList({executionID: 5});
+   * if (result.status) {
+   *     console.log('执行下的版本列表', result.result.executionBuilds);
+   * }
+   * ```
+   */
+  async getBuildList(params: {
+    executionID?: number;
+    projectID?: number;
+    extraFields?: string[];
+  }): Promise<ZentaoLegacyApiResponse> {
+    if (params.executionID !== undefined) {
+      const res = await this.request("execution", "build", {
+        name: "getBuildList",
+        params: [["executionID", params.executionID]],
+        fields: ["title", "executionBuilds", "buildsTotal", ...(params?.extraFields ?? [])],
+      });
+      return res;
+    }
+
+    if (params.projectID !== undefined) {
+      const res = await this.request("project", "build", {
+        name: "getBuildList",
+        params: [["projectID", params.projectID]],
+        fields: ["title", "projectBuilds", "buildsTotal", ...(params?.extraFields ?? [])],
+      });
+      return res;
+    }
+
+    throw new Error("getBuildList 需要提供 executionID 或 projectID");
+  }
+
+  /**
+   * 获取指定的版本（Build）信息
+   *
+   * @param {{buildID: number, extraFields?: string[]}} params 请求参数，`params.buildID` 用于指定版本 ID，`params.extraFields` 指定额外要返回的字段
+   * @returns 请求结果
+   * @example
+   * ```js
+   * import { ZentaoApi } from 'zentao-api';
+   * const zentao = new ZentaoApi({
+   *     url: 'https://pro.demo.zentao.net/', account: 'demo', password: '123456'
+   * });
+   * const result = await zentao.getBuild({buildID: 1});
+   * if (result.status) {
+   *     console.log('版本信息为', result.result.build);
+   * }
+   * ```
+   */
+  async getBuild(params: {
+    buildID: number;
+    extraFields?: string[];
+  }): Promise<ZentaoLegacyApiResponse> {
+    const res = await this.request("build", "view", {
+      name: "getBuild",
+      params: [["buildID", params.buildID]],
+      fields: ["title", "build", ...(params?.extraFields ?? [])],
+    });
+    return res;
+  }
+
+  /**
+   * 在指定执行下创建版本（Build）
+   *
+   * @param params 请求参数，其中 `params.executionID` 为所属执行 ID，`params.product` 为所属产品 ID，`params.name` 为版本名称
+   * @returns 请求结果
+   * @example
+   * ```js
+   * import { ZentaoApi } from 'zentao-api';
+   * const zentao = new ZentaoApi({
+   *     url: 'https://pro.demo.zentao.net/', account: 'demo', password: '123456'
+   * });
+   * // 在执行 5 的产品 2 下创建版本 build1
+   * const result = await zentao.addBuild({executionID: 5, product: 2, name: 'build1', builder: 'demo'});
+   * if (result.status) {
+   *     console.log('版本创建成功');
+   * }
+   * ```
+   */
+  async addBuild(params: {
+    executionID: number;
+    product: number;
+    name: string;
+    builder?: string;
+    branch?: number;
+    date?: string;
+    scmPath?: string;
+    filePath?: string;
+    desc?: string;
+  }): Promise<ZentaoLegacyApiResponse> {
+    const res = await this.request("build", "create", {
+      name: "addBuild",
+      method: "POST",
+      params: [
+        ["executionID", params.executionID],
+        ["productID", params.product],
+      ],
+      data: {
+        product: params.product,
+        branch: params.branch ?? 0,
+        name: params.name,
+        builder: params.builder,
+        date: params.date ?? dayjs().format("YYYY-MM-DD"),
+        scmPath: params.scmPath,
+        filePath: params.filePath,
+        desc: params.desc,
+      },
+    });
+    return res;
+  }
+
+  /**
    * 获取文档空间数据，包括文档库、目录和文档列表。
    *
    * @param params 请求参数

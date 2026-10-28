@@ -513,12 +513,20 @@ export default class ZentaoV1 extends Zentao<ZentaoV1Options> {
     return this.get(`/api.php/v1/products/${productID}/releases`, undefined, "releases");
   }
 
-  async getProjectBuilds(projectID: number): Promise<RestEntity[]> {
-    return this.get(`/api.php/v1/projects/${projectID}/builds`, undefined, "builds");
+  async getProjectBuilds(projectID: number, limit?: number): Promise<RestEntity[]> {
+    return this.get(
+      `/api.php/v1/projects/${projectID}/builds`,
+      limit === undefined ? undefined : { limit },
+      "builds",
+    );
   }
 
-  async getExecutionBuilds(executionID: number): Promise<RestEntity[]> {
-    return this.get(`/api.php/v1/executions/${executionID}/builds`, undefined, "builds");
+  async getExecutionBuilds(executionID: number, limit?: number): Promise<RestEntity[]> {
+    return this.get(
+      `/api.php/v1/executions/${executionID}/builds`,
+      limit === undefined ? undefined : { limit },
+      "builds",
+    );
   }
 
   async getBuild(buildID: number): Promise<RestEntity | null> {

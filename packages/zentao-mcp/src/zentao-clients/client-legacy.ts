@@ -2,10 +2,12 @@ import { ZentaoLegacy } from "@acehubert/zentao-api";
 
 import type { ZentaoFileReadResult } from "@acehubert/zentao-api";
 import type {
+  Build,
   Bug,
   CloseBugParams,
   CloseStoryParams,
   CreateBugParams,
+  CreateBuildParams,
   CreateDocModuleParams,
   CreateDocParams,
   CreateStoryParams,
@@ -85,6 +87,37 @@ function pickEntity<T>(value: unknown, ...keys: string[]): T | null {
   }
 
   return value as T;
+}
+
+/**
+ * 展平 legacy 版本列表接口返回的按产品 ID 分组的 builds 对象
+ * （executionBuilds / projectBuilds，组内为版本数组）。
+ */
+function flattenGroupedBuilds(value: unknown): Build[] {
+  const record = isRecord(value) ? value : null;
+  if (!record) {
+    return Array.isArray(value) ? (value as Build[]) : [];
+  }
+
+  for (const key of ["executionBuilds", "projectBuilds"]) {
+    const grouped = record[key];
+    if (Array.isArray(grouped)) {
+      return grouped as Build[];
+    }
+    if (isRecord(grouped)) {
+      return Object.values(grouped).flatMap((group): Build[] => {
+        if (Array.isArray(group)) {
+          return group as Build[];
+        }
+        if (isRecord(group)) {
+          return Object.values(group) as Build[];
+        }
+        return [];
+      });
+    }
+  }
+
+  return [];
 }
 
 function pickNumber(value: unknown): number | null {
@@ -285,6 +318,56 @@ export class ZentaoClientLegacy implements IZentaoClient {
     } catch {
       return null;
     }
+  }
+
+  async getBuilds(executionID?: number, projectID?: number, limit = 100): Promise<Build[]> {
+    if (!executionID && !projectID) {
+      throw new Error("查询版本列表失败: 缺少 executionID 或 projectID");
+    }
+    // legacy 列表接口不支持服务端分页，取回后本地截断
+    const result = (await this.api.getBuildList({
+      executionID,
+      projectID,
+    })) as LegacyApiResult;
+    return flattenGroupedBuilds(result.result).slice(0, limit);
+  }
+
+  async getBuild(buildID: number): Promise<Build | null> {
+    try {
+      const result = (await this.api.getBuild({ buildID })) as LegacyApiResult;
+      return pickEntity<Build>(result.result, "build");
+    } catch {
+      return null;
+    }
+  }
+
+  async createBuild(params: CreateBuildParams): Promise<Build> {
+    const result = (await this.api.addBuild({
+      executionID: params.execution,
+      product: params.product,
+      name: params.name,
+      builder: params.builder,
+      branch: params.branch,
+      date: params.date,
+      scmPath: params.scmPath,
+      filePath: params.filePath,
+      desc: params.desc,
+    })) as LegacyApiResult;
+
+    if (result.status !== 1) {
+      throw new Error(`创建 Legacy 版本失败: ${String(result.msg ?? "未返回版本数据")}`);
+    }
+
+    // build-create 成功后禅道只返回版本列表跳转地址，需回读列表按名称定位新版本
+    const builds = await this.getBuilds(params.execution, undefined, 100);
+    const created = builds.find(
+      (build) => build.name === params.name && Number(build.product) === params.product,
+    );
+    if (created) {
+      return created;
+    }
+
+    throw new Error(`版本 ${params.name} 创建成功但回读失败，请通过版本列表确认结果`);
   }
 
   async getUsers(limit = 100): Promise<User[]> {

@@ -619,6 +619,82 @@ describe("ZentaoLegacy", () => {
     expectNthRequest(2, "?m=bug&f=view&bugID=1&t=json");
   });
 
+  it("getBuildList 应按执行请求 execution/build 版本列表", async () => {
+    mockLoginSuccessOnce();
+    mockApiSuccessOnce({
+      title: "版本列表",
+      executionBuilds: { 1852: [{ id: 50, name: "build1" }] },
+      ignored: "x",
+    });
+
+    const client = createMockClient();
+    const res = await client.getBuildList({ executionID: 2390 });
+
+    expect(res.status).toBe(1);
+    expect(res.result.title).toBe("版本列表");
+    expect(res.result.executionBuilds).toStrictEqual({ 1852: [{ id: 50, name: "build1" }] });
+    expectNthRequest(2, "?m=execution&f=build&executionID=2390&t=json");
+  });
+
+  it("getBuildList 应按项目请求 project/build 版本列表", async () => {
+    mockLoginSuccessOnce();
+    mockApiSuccessOnce({
+      title: "版本列表",
+      projectBuilds: { 1852: [{ id: 50 }, { id: 49 }] },
+    });
+
+    const client = createMockClient();
+    const res = await client.getBuildList({ projectID: 2045 });
+
+    expect(res.status).toBe(1);
+    expect(res.result.projectBuilds).toStrictEqual({ 1852: [{ id: 50 }, { id: 49 }] });
+    expectNthRequest(2, "?m=project&f=build&projectID=2045&t=json");
+  });
+
+  it("getBuildList 缺少 executionID 和 projectID 时应抛错", async () => {
+    const client = createMockClient();
+
+    await expect(client.getBuildList({})).rejects.toThrow(
+      "getBuildList 需要提供 executionID 或 projectID",
+    );
+  });
+
+  it("getBuild 应返回版本详情", async () => {
+    mockLoginSuccessOnce();
+    mockApiSuccessOnce({
+      build: { id: 3, name: "build1" },
+    });
+
+    const client = createMockClient();
+    const res = await client.getBuild({ buildID: 3 });
+
+    expect(res.status).toBe(1);
+    expect(res.result.build).toStrictEqual({ id: 3, name: "build1" });
+    expectNthRequest(2, "?m=build&f=view&buildID=3&t=json");
+  });
+
+  it("addBuild 应提交版本创建请求", async () => {
+    mockLoginSuccessOnce();
+    mockApiSuccessOnce({ id: 6 });
+
+    const client = createMockClient();
+    const res = await client.addBuild({
+      executionID: 5,
+      product: 2,
+      name: "build2",
+      builder: "demo",
+      date: "2026-10-28",
+    });
+
+    expect(res.status).toBe(1);
+    expectNthRequest(2, "?m=build&f=create&executionID=5&productID=2&t=json", "POST", [
+      "product=2",
+      "name=build2",
+      "builder=demo",
+      "date=2026-10-28",
+    ]);
+  });
+
   it("getDocSpaceData 应返回文档空间数据", async () => {
     mockLoginSuccessOnce();
     const remoteData: DocSpaceData = {
