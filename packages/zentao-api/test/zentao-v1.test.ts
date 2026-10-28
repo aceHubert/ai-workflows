@@ -191,6 +191,78 @@ describe("ZentaoV1", () => {
     expect(get).toHaveBeenCalledWith("/api.php/v1/depts?limit=50");
   });
 
+  it("getExecutionBuilds 应请求执行版本列表并支持 limit", async () => {
+    post.mockResolvedValueOnce({ data: { token: "token-123" } });
+    get.mockResolvedValueOnce({
+      data: {
+        builds: [{ id: 3, name: "build1" }],
+      },
+    });
+
+    const client = createClient();
+    const result = await client.getExecutionBuilds(5, 20);
+
+    expect(result).toStrictEqual([{ id: 3, name: "build1" }]);
+    expect(get).toHaveBeenCalledWith("/api.php/v1/executions/5/builds?limit=20");
+  });
+
+  it("getProjectBuilds 未传 limit 时不附加查询参数", async () => {
+    post.mockResolvedValueOnce({ data: { token: "token-123" } });
+    get.mockResolvedValueOnce({
+      data: {
+        builds: [{ id: 4, name: "build2" }],
+      },
+    });
+
+    const client = createClient();
+    const result = await client.getProjectBuilds(7);
+
+    expect(result).toStrictEqual([{ id: 4, name: "build2" }]);
+    expect(get).toHaveBeenCalledWith("/api.php/v1/projects/7/builds");
+  });
+
+  it("getBuild 应请求版本详情", async () => {
+    post.mockResolvedValueOnce({ data: { token: "token-123" } });
+    get.mockResolvedValueOnce({
+      data: {
+        id: 3,
+        name: "build1",
+      },
+    });
+
+    const client = createClient();
+    const result = await client.getBuild(3);
+
+    expect(result).toStrictEqual({ id: 3, name: "build1" });
+    expect(get).toHaveBeenCalledWith("/api.php/v1/builds/3");
+  });
+
+  it("createBuild 应调用项目下版本创建接口", async () => {
+    post.mockResolvedValueOnce({ data: { token: "token-123" } });
+    post.mockResolvedValueOnce({
+      data: {
+        data: { id: 6, name: "build3" },
+      },
+    });
+
+    const client = createClient();
+    const result = await client.createBuild({
+      project: 4,
+      execution: 5,
+      product: 2,
+      name: "build3",
+      builder: "demo",
+    });
+
+    expect(result).toStrictEqual({ id: 6, name: "build3" });
+    expect(post).toHaveBeenNthCalledWith(2, "/api.php/v1/projects/4/builds", {
+      execution: 5,
+      product: 2,
+      name: "build3",
+      builder: "demo",
+    });
+  });
+
   it("getToken 应复用登录流程", async () => {
     post.mockResolvedValueOnce({ data: { token: "token-xyz" } });
 

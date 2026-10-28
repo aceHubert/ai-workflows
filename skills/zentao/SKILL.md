@@ -1,6 +1,6 @@
 ---
 name: zentao
-description: Uses Zentao via MCP for efficient product, project, bug, story, test case, document, user, and file operations through the configured @acehubert/zentao-mcp server tools.
+description: Uses Zentao via MCP for efficient product, project, build, bug, story, test case, document, user, and file operations through the configured @acehubert/zentao-mcp server tools.
 ---
 
 ## Core Concepts
@@ -40,7 +40,8 @@ values. For example, Bug `browseType` values differ between `legacy` and
 
 **ID-driven operations**: Most write actions require stable Zentao IDs. Use
 `list`, `view`, or `tree` first to identify the exact `productID`, `projectID`,
-`bugID`, `storyID`, `caseID`, `docID`, `libID`, `moduleID`, or `fileID`.
+`executionID`, `bugID`, `storyID`, `caseID`, `buildID`, `docID`, `libID`,
+`moduleID`, or `fileID`.
 
 **Document tree workflow**: Document writes depend on library and module IDs.
 Use `zentao_docs` with `action: "tree"` before creating or editing documents
@@ -85,6 +86,15 @@ small when possible.
 - Use `action: "create"` with structured step objects that include both `desc`
   and `expect`.
 
+### Builds
+
+- Use `zentao_builds` with `action: "list"` and `executionID` (or `projectID`
+  on `v1` / `v2`) to list builds; `legacy` only supports `executionID`.
+- Use `action: "view"` with `buildID` to confirm a build before referencing it
+  in bugs (`openedBuild`) or test flows.
+- Use `action: "create"` with `executionID`, `projectID`, `product`, `name`,
+  and `builder` to register a build. `date` defaults to today when omitted.
+
 ### Documents
 
 1. Use `zentao_docs` with `action: "tree"` and `spaceType` set to `product` or
@@ -102,6 +112,7 @@ small when possible.
 - **Test cases**: `zentao_testcases`
 - **Products**: `zentao_products`
 - **Projects**: `zentao_projects`
+- **Builds**: `zentao_builds`
 - **Users and current profile**: `zentao_users`
 - **Documents and document trees**: `zentao_docs`
 - **Attachments and images**: `zentao_file`

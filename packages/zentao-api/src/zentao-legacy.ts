@@ -1219,6 +1219,128 @@ export default class ZentaoLegacy extends Zentao {
   }
 
   /**
+   * 获取指定执行的版本（Build）列表
+   *
+   * @param params 请求参数，`params.executionID` 用于指定执行 ID，`params.type` 用于指定筛选类型，`params.recPerPage` 与 `params.pageID` 指定分页信息，`params.extraFields` 指定额外要返回的字段
+   * @returns 请求结果
+   * @example
+   * ```js
+   * import { ZentaoApi } from 'zentao-api';
+   * const zentao = new ZentaoApi({
+   *     url: 'https://pro.demo.zentao.net/', account: 'demo', password: '123456'
+   * });
+   * const result = await zentao.getBuildList({executionID: 5, recPerPage: 20});
+   * if (result.status) {
+   *     console.log('版本列表', result.result.builds);
+   * }
+   * ```
+   */
+  async getBuildList(params: {
+    executionID: number;
+    type?: "all" | "product" | "bysearch";
+    param?: number | string;
+    orderBy?: string;
+    recTotal?: number;
+    recPerPage?: number;
+    pageID?: number;
+    extraFields?: string[];
+  }): Promise<ZentaoLegacyApiResponse> {
+    const res = await this.request("build", "browse", {
+      name: "getBuildList",
+      params: [
+        ["executionID", params.executionID],
+        ["type", params?.type ?? "all"],
+        ["param", params?.param ?? 0],
+        ["orderBy", params?.orderBy ?? "id_desc"],
+        ["recTotal", params?.recTotal ?? 0],
+        ["recPerPage", params?.recPerPage ?? 20],
+        ["pageID", params?.pageID ?? 1],
+      ],
+      fields: ["title", "builds", ...(params?.extraFields ?? [])],
+    });
+    return res;
+  }
+
+  /**
+   * 获取指定的版本（Build）信息
+   *
+   * @param {{buildID: number, extraFields?: string[]}} params 请求参数，`params.buildID` 用于指定版本 ID，`params.extraFields` 指定额外要返回的字段
+   * @returns 请求结果
+   * @example
+   * ```js
+   * import { ZentaoApi } from 'zentao-api';
+   * const zentao = new ZentaoApi({
+   *     url: 'https://pro.demo.zentao.net/', account: 'demo', password: '123456'
+   * });
+   * const result = await zentao.getBuild({buildID: 1});
+   * if (result.status) {
+   *     console.log('版本信息为', result.result.build);
+   * }
+   * ```
+   */
+  async getBuild(params: {
+    buildID: number;
+    extraFields?: string[];
+  }): Promise<ZentaoLegacyApiResponse> {
+    const res = await this.request("build", "view", {
+      name: "getBuild",
+      params: [["buildID", params.buildID]],
+      fields: ["title", "build", ...(params?.extraFields ?? [])],
+    });
+    return res;
+  }
+
+  /**
+   * 在指定执行下创建版本（Build）
+   *
+   * @param params 请求参数，其中 `params.executionID` 为所属执行 ID，`params.product` 为所属产品 ID，`params.name` 为版本名称
+   * @returns 请求结果
+   * @example
+   * ```js
+   * import { ZentaoApi } from 'zentao-api';
+   * const zentao = new ZentaoApi({
+   *     url: 'https://pro.demo.zentao.net/', account: 'demo', password: '123456'
+   * });
+   * // 在执行 5 的产品 2 下创建版本 build1
+   * const result = await zentao.addBuild({executionID: 5, product: 2, name: 'build1', builder: 'demo'});
+   * if (result.status) {
+   *     console.log('版本创建成功');
+   * }
+   * ```
+   */
+  async addBuild(params: {
+    executionID: number;
+    product: number;
+    name: string;
+    builder?: string;
+    branch?: number;
+    date?: string;
+    scmPath?: string;
+    filePath?: string;
+    desc?: string;
+  }): Promise<ZentaoLegacyApiResponse> {
+    const res = await this.request("build", "create", {
+      name: "addBuild",
+      method: "POST",
+      params: [
+        ["executionID", params.executionID],
+        ["productID", params.product],
+      ],
+      data: {
+        product: params.product,
+        branch: params.branch ?? 0,
+        name: params.name,
+        builder: params.builder,
+        date: params.date ?? dayjs().format("YYYY-MM-DD"),
+        scmPath: params.scmPath,
+        filePath: params.filePath,
+        desc: params.desc,
+      },
+    });
+    return res;
+  }
+
+  /**
    * 获取文档空间数据，包括文档库、目录和文档列表。
    *
    * @param params 请求参数

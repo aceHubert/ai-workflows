@@ -1,6 +1,6 @@
 ---
 name: zentao-cli
-description: Use this skill to query, create, and maintain Zentao bugs, stories, test cases, products, projects, users, and documents through the zentao CLI.
+description: Use this skill to query, create, and maintain Zentao bugs, stories, test cases, products, projects, builds, users, and documents through the zentao CLI.
 ---
 
 The `zentao` CLI exposes Zentao operations directly in the terminal. Use it for
@@ -155,6 +155,25 @@ zentao projects view --projectID 1
 zentao users me
 zentao users list --limit 20
 zentao users view --userID 1
+```
+
+## Builds
+
+`list` accepts `--executionID` or `--projectID` (at least one; `legacy` only
+supports `--executionID`). `create` requires `--projectID`, `--executionID`,
+`--product`, `--name`, and `--builder`.
+
+```bash
+zentao builds list --executionID 5 --limit 20
+zentao builds view --buildID 3
+
+zentao builds create \
+  --projectID 4 \
+  --executionID 5 \
+  --product 2 \
+  --name "build1" \
+  --builder "demo" \
+  --desc "First build of the sprint"
 ```
 
 ## Docs

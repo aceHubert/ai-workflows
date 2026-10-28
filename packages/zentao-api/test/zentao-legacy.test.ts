@@ -619,6 +619,64 @@ describe("ZentaoLegacy", () => {
     expectNthRequest(2, "?m=bug&f=view&bugID=1&t=json");
   });
 
+  it("getBuildList 应返回版本列表", async () => {
+    mockLoginSuccessOnce();
+    mockApiSuccessOnce({
+      title: "版本列表",
+      builds: [{ id: 3, name: "build1" }],
+      pager: { recTotal: 1 },
+    });
+
+    const client = createMockClient();
+    const res = await client.getBuildList({ executionID: 5, recPerPage: 20 });
+
+    expect(res.status).toBe(1);
+    expect(res.result).toStrictEqual({
+      title: "版本列表",
+      builds: [{ id: 3, name: "build1" }],
+    });
+    expectNthRequest(
+      2,
+      "?m=build&f=browse&executionID=5&type=all&param=0&orderBy=id_desc&recTotal=0&recPerPage=20&pageID=1&t=json",
+    );
+  });
+
+  it("getBuild 应返回版本详情", async () => {
+    mockLoginSuccessOnce();
+    mockApiSuccessOnce({
+      build: { id: 3, name: "build1" },
+    });
+
+    const client = createMockClient();
+    const res = await client.getBuild({ buildID: 3 });
+
+    expect(res.status).toBe(1);
+    expect(res.result.build).toStrictEqual({ id: 3, name: "build1" });
+    expectNthRequest(2, "?m=build&f=view&buildID=3&t=json");
+  });
+
+  it("addBuild 应提交版本创建请求", async () => {
+    mockLoginSuccessOnce();
+    mockApiSuccessOnce({ id: 6 });
+
+    const client = createMockClient();
+    const res = await client.addBuild({
+      executionID: 5,
+      product: 2,
+      name: "build2",
+      builder: "demo",
+      date: "2026-10-28",
+    });
+
+    expect(res.status).toBe(1);
+    expectNthRequest(2, "?m=build&f=create&executionID=5&productID=2&t=json", "POST", [
+      "product=2",
+      "name=build2",
+      "builder=demo",
+      "date=2026-10-28",
+    ]);
+  });
+
   it("getDocSpaceData 应返回文档空间数据", async () => {
     mockLoginSuccessOnce();
     const remoteData: DocSpaceData = {

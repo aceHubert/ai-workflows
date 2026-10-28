@@ -490,6 +490,45 @@ const tools: ZentaoTool[] = [
     },
   },
 
+  // 版本工具
+  {
+    name: "zentao_builds",
+    supportVersions: [],
+    description: "版本（Build）操作。支持：查询列表、查询详情、创建",
+    inputSchema: {
+      type: "object",
+      properties: {
+        action: {
+          type: "string",
+          enum: ["list", "view", "create"],
+          description: "操作类型: list-列表, view-详情, create-创建",
+        },
+        executionID: {
+          type: "number",
+          description: "执行 ID（list/create 时使用，legacy 版本 list 仅支持按执行查询）",
+        },
+        projectID: {
+          type: "number",
+          description: "项目 ID（list 时与 executionID 至少提供一个；create 时 v1 版本必填）",
+        },
+        buildID: { type: "number", description: "版本 ID（view 时使用）" },
+        limit: { type: "number", description: "返回数量限制，默认 100" },
+        product: { type: "number", description: "产品 ID（create 时必填）" },
+        name: { type: "string", description: "版本名称，如 build1（create 时必填）" },
+        builder: { type: "string", description: "构建者账号（create 时必填）" },
+        branch: { type: "number", description: "分支 ID（create 时使用）" },
+        date: {
+          type: "string",
+          description: "构建日期，格式 YYYY-MM-DD（create 时使用，默认当天）",
+        },
+        scmPath: { type: "string", description: "源代码标签地址（create 时使用）" },
+        filePath: { type: "string", description: "下载地址（create 时使用）" },
+        desc: { type: "string", description: "版本描述（create 时使用）" },
+      },
+      required: ["action"],
+    },
+  },
+
   // 用户工具
   {
     name: "zentao_users",
@@ -1100,6 +1139,102 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 isError: true,
               };
             }
+            break;
+
+          default:
+            return {
+              content: [{ type: "text", text: `未知操作类型: ${action}` }],
+              isError: true,
+            };
+        }
+        break;
+      }
+
+      // 版本操作
+      case "zentao_builds": {
+        const {
+          action,
+          executionID,
+          projectID,
+          buildID,
+          limit,
+          product,
+          name,
+          builder,
+          branch,
+          date,
+          scmPath,
+          filePath,
+          desc,
+        } = args as {
+          action: string;
+          executionID?: number;
+          projectID?: number;
+          buildID?: number;
+          limit?: number;
+          product?: number;
+          name?: string;
+          builder?: string;
+          branch?: number;
+          date?: string;
+          scmPath?: string;
+          filePath?: string;
+          desc?: string;
+        };
+
+        switch (action) {
+          case "list":
+            if (!executionID && !projectID) {
+              return {
+                content: [
+                  { type: "text", text: "缺少必要参数: executionID 或 projectID（至少提供一个）" },
+                ],
+                isError: true,
+              };
+            }
+            result = await zentaoClient.getBuilds(executionID, projectID, limit);
+            break;
+
+          case "view":
+            if (!buildID) {
+              return {
+                content: [{ type: "text", text: "缺少必要参数: buildID" }],
+                isError: true,
+              };
+            }
+            result = await zentaoClient.getBuild(buildID);
+            if (!result) {
+              return {
+                content: [{ type: "text", text: `版本 #${buildID} 不存在或无权限查看` }],
+                isError: true,
+              };
+            }
+            break;
+
+          case "create":
+            if (!executionID || !projectID || !product || !name || !builder) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: "缺少必要参数: executionID, projectID, product, name, builder",
+                  },
+                ],
+                isError: true,
+              };
+            }
+            result = await zentaoClient.createBuild({
+              project: projectID,
+              execution: executionID,
+              product,
+              name,
+              builder,
+              branch,
+              date,
+              scmPath,
+              filePath,
+              desc,
+            });
             break;
 
           default:

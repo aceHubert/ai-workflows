@@ -2,10 +2,12 @@ import { ZentaoLegacy } from "@acehubert/zentao-api";
 
 import type { ZentaoFileReadResult } from "@acehubert/zentao-api";
 import type {
+  Build,
   Bug,
   CloseBugParams,
   CloseStoryParams,
   CreateBugParams,
+  CreateBuildParams,
   CreateDocModuleParams,
   CreateDocParams,
   CreateStoryParams,
@@ -285,6 +287,56 @@ export class ZentaoClientLegacy implements IZentaoClient {
     } catch {
       return null;
     }
+  }
+
+  async getBuilds(executionID?: number, _projectID?: number, limit = 100): Promise<Build[]> {
+    if (!executionID) {
+      throw new Error("Legacy API 查询版本列表需要提供 executionID");
+    }
+    const result = (await this.api.getBuildList({
+      executionID,
+      recPerPage: limit,
+      pageID: 1,
+    })) as LegacyApiResult;
+    return pickCollection<Build>(result.result, "builds");
+  }
+
+  async getBuild(buildID: number): Promise<Build | null> {
+    try {
+      const result = (await this.api.getBuild({ buildID })) as LegacyApiResult;
+      return pickEntity<Build>(result.result, "build");
+    } catch {
+      return null;
+    }
+  }
+
+  async createBuild(params: CreateBuildParams): Promise<Build> {
+    const result = (await this.api.addBuild({
+      executionID: params.execution,
+      product: params.product,
+      name: params.name,
+      builder: params.builder,
+      branch: params.branch,
+      date: params.date,
+      scmPath: params.scmPath,
+      filePath: params.filePath,
+      desc: params.desc,
+    })) as LegacyApiResult;
+
+    if (result.status !== 1) {
+      throw new Error(`创建 Legacy 版本失败: ${String(result.msg ?? "未返回版本数据")}`);
+    }
+
+    // build-create 成功后禅道只返回版本列表跳转地址，需回读列表按名称定位新版本
+    const builds = await this.getBuilds(params.execution, undefined, 100);
+    const created = builds.find(
+      (build) => build.name === params.name && Number(build.product) === params.product,
+    );
+    if (created) {
+      return created;
+    }
+
+    throw new Error(`版本 ${params.name} 创建成功但回读失败，请通过版本列表确认结果`);
   }
 
   async getUsers(limit = 100): Promise<User[]> {

@@ -604,6 +604,75 @@ function registerSimpleReadCommands(parser: Argv, getClient: ClientFactory): Arg
       },
     )
     .command(
+      "builds <action>",
+      "版本操作：list / view / create",
+      (command) =>
+        commonListOptions(command)
+          .positional("action", {
+            choices: ["list", "view", "create"] as const,
+            describe: "操作类型",
+          })
+          .option("executionID", { type: "number", describe: "执行 ID（list/create 时使用）" })
+          .option("projectID", { type: "number", describe: "项目 ID（list/create 时使用）" })
+          .option("buildID", { type: "number", describe: "版本 ID（view 时使用）" })
+          .option("product", { type: "number", describe: "产品 ID（create 时使用）" })
+          .option("name", { type: "string", describe: "版本名称（create 时使用）" })
+          .option("builder", { type: "string", describe: "构建者账号（create 时使用）" })
+          .option("branch", { type: "number", describe: "分支 ID" })
+          .option("date", { type: "string", describe: "构建日期，格式 YYYY-MM-DD" })
+          .option("scmPath", { type: "string", describe: "源代码标签地址" })
+          .option("filePath", { type: "string", describe: "下载地址" })
+          .option("desc", { type: "string", describe: "版本描述" }),
+      async (args: ZentaoCommandArgs) => {
+        const client = getClient(args);
+        const action = getString(args, "action");
+        const executionID = getNumber(args, "executionID");
+        const projectID = getNumber(args, "projectID");
+
+        switch (action) {
+          case "list":
+            if (!executionID && !projectID) {
+              throw new Error("缺少必要参数: executionID 或 projectID（至少提供一个）");
+            }
+            printJsonResult(
+              await client.getBuilds(executionID, projectID, getNumber(args, "limit")),
+            );
+            return;
+          case "view": {
+            const buildID = getNumber(args, "buildID");
+            if (!buildID) throw new Error("缺少必要参数: buildID");
+            printJsonResult(await client.getBuild(buildID));
+            return;
+          }
+          case "create": {
+            const product = getNumber(args, "product");
+            const name = getString(args, "name");
+            const builder = getString(args, "builder");
+            if (!executionID || !projectID || !product || !name || !builder) {
+              throw new Error("缺少必要参数: executionID, projectID, product, name, builder");
+            }
+            printJsonResult(
+              await client.createBuild({
+                project: projectID,
+                execution: executionID,
+                product,
+                name,
+                builder,
+                branch: getNumber(args, "branch"),
+                date: getString(args, "date"),
+                scmPath: getString(args, "scmPath"),
+                filePath: getString(args, "filePath"),
+                desc: getString(args, "desc"),
+              }),
+            );
+            return;
+          }
+          default:
+            throw new Error(`未知操作类型: ${String(action)}`);
+        }
+      },
+    )
+    .command(
       "users <action>",
       "用户操作：list / view / me",
       (command) =>
