@@ -2,6 +2,7 @@
 /**
  * TestLink MCP Server
  * 提供 TestLink 测试资产的常用操作给 AI 助手使用。
+ * 基于 testlink-xmlrpc 与 TestLink 服务通信。
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";

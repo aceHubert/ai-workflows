@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+/**
+ * Apifox MCP Server
+ * 提供 Apifox OpenAPI 缓存的读取、刷新与 $ref 资源解析给 AI 助手使用。
+ */
 
 import { createHash } from "node:crypto";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
