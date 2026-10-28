@@ -1,0 +1,61 @@
+skills/zentao/SKILL.md
+  s_f345cbca22215a::t_a18d75d3010935 3
+  s_f345cbca22215a::t_a7c1549ece2ff5 43-44
+  s_f345cbca22215a::t_bfc63461fad37c 115
+  s_f345cbca22215a::t_7ad93bfafd23ab 89-97
+packages/zentao-api/src/zentao-legacy.ts
+  s_f345cbca22215a::t_4c749e2ac57236 1221-1342
+packages/zentao-api/test/zentao-legacy.test.ts
+  s_f345cbca22215a::t_c834bc06d81c13 622-679
+packages/zentao-mcp/src/cli.ts
+  s_f345cbca22215a::t_3173318780d134 606-672
+  s_f345cbca22215a::t_7c9c589be05953 673-674
+packages/zentao-mcp/src/zentao-clients/client-v1.ts
+  s_f345cbca22215a::t_8a3ec2e8206968 11
+  s_f345cbca22215a::t_bd8bfd6d0d9ea4 145-173
+  s_f345cbca22215a::t_edc152c684a8f2 7
+packages/zentao-api/src/zentao-v1.ts
+  s_f345cbca22215a::t_41adfb1c417f40 516-521,524-529
+packages/zentao-api/test/zentao-v1.test.ts
+  s_f345cbca22215a::t_f73f7b8c15f0bd 194-265
+packages/zentao-api/src/zentao-v2.ts
+  s_f345cbca22215a::t_17164eabd251df 540-545,548-553
+packages/zentao-mcp/src/zentao-clients/client-v2.ts
+  s_f345cbca22215a::t_75489d7a214e2c 6,10
+  s_f345cbca22215a::t_05feedfc4decf8 291-318
+packages/zentao-mcp/src/zentao-clients/client-legacy.ts
+  s_f345cbca22215a::t_7894a3c36de77f 5,10
+  s_f345cbca22215a::t_f6328328729c5b 292-341
+packages/zentao-api/test/zentao-v2.test.ts
+  s_f345cbca22215a::t_f8ca8d91fd6810 146-175,177-199
+  s_f345cbca22215a::t_e345b685f01ab7 176
+skills/zentao-cli/SKILL.md
+  s_f345cbca22215a::t_6db0ed7c41d2ab 3
+  s_f345cbca22215a::t_6a7dab0ef64d55 160-178
+packages/zentao-mcp/src/index.ts
+  s_f345cbca22215a::t_6e0de257c5f432 493-528,530
+  s_f345cbca22215a::t_db69fc7ce9d654 1153-1233,1243-1244,1246,1248
+  s_f345cbca22215a::t_892e02c7bceca3 529
+  s_f345cbca22215a::t_f3dc40a79a71c1 531
+  s_f345cbca22215a::t_a3362947caffe5 1234-1236,1240-1242
+  s_f345cbca22215a::t_3d2ce1f1edebaa 1245
+  s_f345cbca22215a::t_d0fb2bc2e1f72a 1247
+packages/zentao-mcp/src/types.ts
+  s_f345cbca22215a::t_0048faa1ffd35c 781-783
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "608600624fca8ea201175533cb9a79ee2c7e016d",
+  "prompts": {},
+  "sessions": {
+    "s_f345cbca22215a": {
+      "agent_id": {
+        "tool": "zcode",
+        "id": "session_8d9d7b6b5bd6a9e25bf88c951106c814",
+        "model": "GLM-5.3"
+      },
+      "human_author": "hubert <hubert@lejian.com>"
+    }
+  }
+}
